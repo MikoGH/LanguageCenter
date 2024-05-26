@@ -1,4 +1,4 @@
-﻿using LanguageCenter.Models;
+﻿using LanguageCenter.Models.Entity;
 
 namespace LanguageCenter.Repositories.Interfaces
 {
@@ -9,5 +9,6 @@ namespace LanguageCenter.Repositories.Interfaces
         public void Insert(CourseEntity course);
         public void Update(CourseEntity course);
         public void Delete(CourseEntity course);
+        public bool ExistById(int id);
     }
 }

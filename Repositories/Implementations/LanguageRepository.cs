@@ -1,5 +1,5 @@
 ﻿using LanguageCenter.Data;
-using LanguageCenter.Models;
+using LanguageCenter.Models.Entity;
 using LanguageCenter.Repositories.Interfaces;
 
 namespace LanguageCenter.Repositories.Implementations
@@ -7,10 +7,10 @@ namespace LanguageCenter.Repositories.Implementations
     public class LanguageRepository : ILanguageRepository
     {
         Context context;
-        public LanguageRepository(Context _context)
-        {
-            context = _context;
-        }
+        public LanguageRepository(Context context)
+		{
+			this.context = context;
+		}
 
         public IEnumerable<LanguageEntity> GetAll()
         {
@@ -38,6 +38,10 @@ namespace LanguageCenter.Repositories.Implementations
         {
             context.Languages.Remove(language);
             context.SaveChanges();
+        }
+        public bool ExistById(int id) 
+        { 
+            return context.Languages.Any(language => language.Id == id);
         }
     }
 }

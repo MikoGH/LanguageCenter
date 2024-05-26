@@ -1,5 +1,5 @@
 ﻿using LanguageCenter.Data;
-using LanguageCenter.Models;
+using LanguageCenter.Models.Entity;
 using LanguageCenter.Repositories.Interfaces;
 
 namespace LanguageCenter.Repositories.Implementations
@@ -7,9 +7,9 @@ namespace LanguageCenter.Repositories.Implementations
     public class LevelRepository : ILevelRepository
     {
         Context context;
-        public LevelRepository(Context _context)
+        public LevelRepository(Context context)
         {
-            context = _context;
+            this.context = context;
         }
 
         public IEnumerable<LevelEntity> GetAll()
@@ -38,6 +38,10 @@ namespace LanguageCenter.Repositories.Implementations
         {
             context.Levels.Remove(level);
             context.SaveChanges();
+        }
+        public bool ExistById(int id)
+        {
+            return context.Levels.Any(level => level.Id == id);
         }
     }
 }

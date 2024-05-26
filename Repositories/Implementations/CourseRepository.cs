@@ -1,5 +1,5 @@
 ﻿using LanguageCenter.Data;
-using LanguageCenter.Models;
+using LanguageCenter.Models.Entity;
 using LanguageCenter.Repositories.Interfaces;
 using System.Reflection.Emit;
 
@@ -8,9 +8,9 @@ namespace LanguageCenter.Repositories.Implementations
     public class CourseRepository : ICourseRepository
     {
         Context context;
-        public CourseRepository(Context _context)
+        public CourseRepository(Context context)
         {
-            context = _context;
+            this.context = context;
         }
 
         public IEnumerable<CourseEntity> GetAll()
@@ -39,6 +39,11 @@ namespace LanguageCenter.Repositories.Implementations
         {
             context.Courses.Remove(course);
             context.SaveChanges();
+        }
+
+        public bool ExistById(int id)
+        {
+            return context.Courses.Any(course => course.Id == id);
         }
     }
 }

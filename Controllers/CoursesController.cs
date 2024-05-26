@@ -1,18 +1,23 @@
-﻿using LanguageCenter.Models;
+﻿using LanguageCenter.Models.Dto;
+using LanguageCenter.Models.Entity;
 using LanguageCenter.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanguageCenter.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class CoursesController : ControllerBase
 	{
 		private readonly ICourseRepository courseRepository;
-		public CoursesController(ICourseRepository _courseRepository)
+		private readonly ILanguageRepository languageRepository;
+		private readonly ILevelRepository levelRepository;
+		public CoursesController(ICourseRepository courseRepository, ILanguageRepository languageRepository, ILevelRepository levelRepository)
 		{
-			courseRepository = _courseRepository;
+			this.courseRepository = courseRepository;
+			this.languageRepository = languageRepository;
+			this.levelRepository = levelRepository;
 		}
 
 		[HttpGet("")]
@@ -34,9 +39,35 @@ namespace LanguageCenter.Controllers
 		}
 
 		[HttpPost("")]
-		public IActionResult Create([FromBody] CourseEntity course)
+		public IActionResult Create([FromQuery] InsertCourseDto courseDto)
 		{
+			CourseEntity course = new CourseEntity
+			{
+				LanguageId = courseDto.LanguageId,
+				LevelId = courseDto.LevelId,
+				Count_lessons = courseDto.Count_lessons
+			};
 			courseRepository.Insert(course);
+			return Ok();
+		}
+
+		[HttpPut("{id:int}")]
+		public IActionResult Update([FromRoute] int id, [FromQuery] UpdateCourseDto courseDto)
+		{
+			CourseEntity course = courseRepository.GetById(id);
+			if (course == null)	
+				return NotFound();
+
+			if (!languageRepository.ExistById(courseDto.LanguageId))
+				return NotFound();
+			if (!levelRepository.ExistById(courseDto.LevelId))
+				return NotFound();
+
+			course.LanguageId = courseDto.LanguageId;
+			course.LevelId = courseDto.LevelId;
+			course.Count_lessons = courseDto.Count_lessons;
+
+			courseRepository.Update(course);
 			return Ok();
 		}
 
@@ -48,48 +79,5 @@ namespace LanguageCenter.Controllers
 			courseRepository.Delete(course);
 			return Ok();
 		}
-
-		//// POST: CoursesController/Create
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult Create(IFormCollection collection)
-		//{
-		//	try
-		//	{
-		//		return RedirectToAction(nameof(Index));
-		//	}
-		//	catch
-		//	{
-		//		return View();
-		//	}
-		//}
-
-		//// GET: CoursesController/Edit/5
-		//public ActionResult Edit(int id)
-		//{
-		//	return View();
-		//}
-
-		//// POST: CoursesController/Edit/5
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult Edit(int id, IFormCollection collection)
-		//{
-		//	try
-		//	{
-		//		return RedirectToAction(nameof(Index));
-		//	}
-		//	catch
-		//	{
-		//		return View();
-		//	}
-		//}
-
-		//// GET: CoursesController/Delete/5
-		//public ActionResult Delete(int id)
-		//{
-		//	return View();
-		//}
-
 	}
 }

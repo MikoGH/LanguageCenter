@@ -1,5 +1,6 @@
 ﻿using LanguageCenter.Data;
 using LanguageCenter.Models;
+using LanguageCenter.Models.Entity;
 using LanguageCenter.Repositories.Implementations;
 using LanguageCenter.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
