@@ -21,8 +21,8 @@ namespace LanguageCenter.Models.Entity
 		public string Last_name { get; set; }
 
 
-		public static int ROLE_ADMIN = 0;
-		public static int ROLE_TUTOR = 1;
-		public static int ROLE_CLIENT = 2;
+		public const string ROLE_ADMIN = "0";
+		public const string ROLE_TUTOR = "1";
+		public const string ROLE_CLIENT = "2";
 	}
 }

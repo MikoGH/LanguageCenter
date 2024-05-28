@@ -21,7 +21,11 @@ namespace LanguageCenter.Repositories.Implementations
 		{
 			return context.Persons.Where(person => person.Id == id).FirstOrDefault();
 		}
-		
+		public PersonEntity GetByLogin(string login)
+		{
+			return context.Persons.Where(person => person.Login == login).FirstOrDefault();
+		}
+
 		public void Insert(PersonEntity person)
 		{
 			context.Persons.Add(person);
@@ -43,6 +47,11 @@ namespace LanguageCenter.Repositories.Implementations
 		public bool ExistById(int id)
 		{
 			return context.Persons.Any(person => person.Id == id);
+		}
+
+		public bool ExistByLogin(string login)
+		{
+			return context.Persons.Any(person => person.Login.Equals(login));
 		}
 	}
 }

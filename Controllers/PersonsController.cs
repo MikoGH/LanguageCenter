@@ -1,19 +1,25 @@
 ﻿using LanguageCenter.Models.Dto;
 using LanguageCenter.Models.Entity;
+using LanguageCenter.Modules;
 using LanguageCenter.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanguageCenter.Controllers
 {
+	[Authorize(Roles = PersonEntity.ROLE_ADMIN)]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class PersonsController : ControllerBase
 	{
 		private readonly IPersonRepository personRepository;
-		public PersonsController(IPersonRepository personRepository)
+		private readonly IPasswordHasher passwordHasher;
+		public PersonsController(IPersonRepository personRepository, IPasswordHasher passwordHasher)
 		{
 			this.personRepository = personRepository;
+			this.passwordHasher = passwordHasher;
 		}
 
 		[HttpGet("")]
@@ -37,11 +43,15 @@ namespace LanguageCenter.Controllers
 		[HttpPost("")]
 		public IActionResult Create([FromQuery] InsertPersonDto personDto)
 		{
+			if (personRepository.ExistByLogin(personDto.Login))
+				return NotFound();
+
+			string hashedPassword = passwordHasher.Generate(personDto.Password);
 			PersonEntity person = new PersonEntity
 			{
 				Role = personDto.Role,
 				Login = personDto.Login,
-				Password = personDto.Password,
+				Password = hashedPassword,
 				First_name = personDto.First_name,
 				Second_name = personDto.Second_name,
 				Last_name = personDto.Last_name
@@ -57,9 +67,10 @@ namespace LanguageCenter.Controllers
 			if (person == null)
 				return NotFound();
 
+			string hashedPassword = passwordHasher.Generate(personDto.Password);
 			person.Role = personDto.Role;
 			person.Login = personDto.Login;
-			person.Password = personDto.Password;
+			person.Password = hashedPassword;
 			person.First_name = personDto.First_name;
 			person.Second_name = personDto.Second_name;
 			person.Last_name = personDto.Last_name;
