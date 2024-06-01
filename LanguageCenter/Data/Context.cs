@@ -1,4 +1,4 @@
-﻿using LanguageCenter.Models.Entity;
+﻿using LanguageCenter.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LanguageCenter.Data

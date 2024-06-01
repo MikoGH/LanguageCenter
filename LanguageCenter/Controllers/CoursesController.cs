@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
-using LanguageCenter.CQRS.Commands.Courses;
-using LanguageCenter.CQRS.Queries.Courses;
-using LanguageCenter.Models.Dto;
-using LanguageCenter.Models.Entity;
-using LanguageCenter.Repositories.Interfaces;
+using LanguageCenter.Features.Courses.Commands.DeleteCourseById;
+using LanguageCenter.Features.Courses.Commands.InsertCourse;
+using LanguageCenter.Features.Courses.Commands.UpdateCourse;
+using LanguageCenter.Features.Courses.Dtos;
+using LanguageCenter.Features.Courses.Queries.GetAllCourses;
+using LanguageCenter.Features.Courses.Queries.GetCourseById;
+using LanguageCenter.Features.Languages.Queries.ExistsLanguageById;
+using LanguageCenter.Features.Levels.Queries.ExistsLevelById;
+using LanguageCenter.Models;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace LanguageCenter.Controllers
 {
@@ -15,20 +17,16 @@ namespace LanguageCenter.Controllers
 	[ApiController]
 	public class CoursesController : ControllerBase
 	{
-		private readonly ILanguageRepository languageRepository;
-		private readonly ILevelRepository levelRepository;
 		private readonly IMapper mapper;
 		private readonly IMediator mediator;
-		public CoursesController(ILanguageRepository languageRepository, ILevelRepository levelRepository, IMapper mapper, IMediator mediator)
+		public CoursesController(IMapper mapper, IMediator mediator)
 		{
-			this.languageRepository = languageRepository;
-			this.levelRepository = levelRepository;
 			this.mapper = mapper;
 			this.mediator = mediator;
 		}
 
 		[HttpGet("")]
-		public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+		public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
 		{
 			IEnumerable<CourseEntity> courses = await mediator.Send(new GetAllCoursesQuery(), cancellationToken);
 			if (courses == null)
@@ -48,6 +46,13 @@ namespace LanguageCenter.Controllers
 		[HttpPost("")]
 		public async Task<IActionResult> Create(InsertCourseDto courseDto, CancellationToken cancellationToken)
 		{
+			if (!await mediator.Send(new ExistsLanguageByIdQuery(courseDto.LanguageId), cancellationToken))
+				return NotFound();
+			if (!await mediator.Send(new ExistsLevelByIdQuery(courseDto.LevelId), cancellationToken))
+				return NotFound();
+			if (courseDto.CountLessons < 0)
+				return BadRequest();
+
 			CourseEntity course = mapper.Map<CourseEntity>(courseDto);
 			await mediator.Send(new InsertCourseCommand(course), cancellationToken);
 			return Ok(course);
@@ -60,10 +65,12 @@ namespace LanguageCenter.Controllers
 			if (course == null)	
 				return NotFound();
 
-			if (!await languageRepository.ExistsByIdAsync(courseDto.LanguageId, cancellationToken))  //!
+			if (!await mediator.Send(new ExistsLanguageByIdQuery(course.LanguageId), cancellationToken))
 				return NotFound();
-			if (!await levelRepository.ExistsByIdAsync(courseDto.LevelId, cancellationToken))  //!
+			if (!await mediator.Send(new ExistsLevelByIdQuery(course.LevelId), cancellationToken))
 				return NotFound();
+			if (courseDto.CountLessons < 0)
+				return BadRequest();
 
 			course = mapper.Map(courseDto, course);
 

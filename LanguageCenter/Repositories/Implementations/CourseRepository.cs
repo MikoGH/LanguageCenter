@@ -1,5 +1,5 @@
 ﻿using LanguageCenter.Data;
-using LanguageCenter.Models.Entity;
+using LanguageCenter.Models;
 using LanguageCenter.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;

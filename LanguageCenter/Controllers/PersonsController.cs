@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
-using LanguageCenter.Models.Dto;
-using LanguageCenter.Models.Entity;
-using LanguageCenter.Modules;
-using LanguageCenter.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using LanguageCenter.Features.Persons.Commands.DeletePersonById;
+using LanguageCenter.Features.Persons.Commands.InsertPerson;
+using LanguageCenter.Features.Persons.Commands.UpdatePerson;
+using LanguageCenter.Features.Persons.Dtos;
+using LanguageCenter.Features.Persons.Queries.ExistsPersonByLogin;
+using LanguageCenter.Features.Persons.Queries.GetAllPersons;
+using LanguageCenter.Features.Persons.Queries.GetPersonById;
+using LanguageCenter.Models;
+using LanguageCenter.Modules.PasswordHasher;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanguageCenter.Controllers
@@ -15,20 +19,20 @@ namespace LanguageCenter.Controllers
 	[ApiController]
 	public class PersonsController : ControllerBase
 	{
-		private readonly IPersonRepository personRepository;
 		private readonly IPasswordHasher passwordHasher;
 		private readonly IMapper mapper;
-		public PersonsController(IPersonRepository personRepository, IPasswordHasher passwordHasher, IMapper mapper)
+		private readonly IMediator mediator;
+		public PersonsController(IPasswordHasher passwordHasher, IMapper mapper, IMediator mediator)
 		{
-			this.personRepository = personRepository;
 			this.passwordHasher = passwordHasher;
 			this.mapper = mapper;
+			this.mediator = mediator;
 		}
 
 		[HttpGet("")]
 		public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
 		{
-			IEnumerable<PersonEntity> persons = await personRepository.GetAllAsync(cancellationToken);
+			IEnumerable<PersonEntity> persons = await mediator.Send(new GetAllPersonsQuery(), cancellationToken);
 			if (persons == null)
 				return NotFound();
 			IEnumerable<GetPersonDto> personsDto = mapper.Map<IEnumerable<GetPersonDto>>(persons);
@@ -38,7 +42,7 @@ namespace LanguageCenter.Controllers
 		[HttpGet("{id:int}")]
 		public async Task<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
 		{
-			PersonEntity person = await personRepository.GetByIdAsync(id, cancellationToken);
+			PersonEntity person = await mediator.Send(new GetPersonByIdQuery(id), cancellationToken);
 			if (person == null)
 				return NotFound();
 			GetPersonDto personDto = mapper.Map<GetPersonDto>(person);
@@ -48,13 +52,13 @@ namespace LanguageCenter.Controllers
 		[HttpPost("")]
 		public async Task<IActionResult> Create(InsertPersonDto personDto, CancellationToken cancellationToken)
 		{
-			if (await personRepository.ExistsByLoginAsync(personDto.Login, cancellationToken))
+			if (await mediator.Send(new ExistsPersonByLoginQuery(personDto.Login), cancellationToken))
 				return NotFound();
 
 			personDto.Password = passwordHasher.Generate(personDto.Password);
 			PersonEntity person = mapper.Map<PersonEntity>(personDto);
 
-			await personRepository.InsertAsync(person, cancellationToken);
+			await mediator.Send(new InsertPersonCommand(person), cancellationToken);
 			GetPersonDto getPersonDto = mapper.Map<GetPersonDto>(person);
 			return Ok(getPersonDto);
 		}
@@ -62,14 +66,14 @@ namespace LanguageCenter.Controllers
 		[HttpPut("{id:int}")]
 		public async Task<IActionResult> Update([FromRoute] int id, UpdatePersonDto personDto, CancellationToken cancellationToken)
 		{
-			PersonEntity person = await personRepository.GetByIdAsync(id, cancellationToken);
+			PersonEntity person = await mediator.Send(new GetPersonByIdQuery(id), cancellationToken);
 			if (person == null)
 				return NotFound();
 
 			personDto.Password = passwordHasher.Generate(personDto.Password);
 			person = mapper.Map<PersonEntity>(personDto);
 
-			await personRepository.UpdateAsync(person, cancellationToken);
+			await mediator.Send(new UpdatePersonCommand(person), cancellationToken);
 			GetPersonDto getPersonDto = mapper.Map<GetPersonDto>(person);
 			return Ok(getPersonDto);
 		}
@@ -77,9 +81,9 @@ namespace LanguageCenter.Controllers
 		[HttpDelete("{id:int}")]
 		public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken cancellationToken)
 		{
-			bool result = await personRepository.DeleteByIdAsync(id, cancellationToken);
+			bool result = await mediator.Send(new DeletePersonByIdCommand(id), cancellationToken);
 			if (!result) return NotFound();
-            return Ok();
+			return Ok();
 		}
 	}
 }

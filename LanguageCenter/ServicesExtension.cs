@@ -1,8 +1,12 @@
 ﻿using LanguageCenter.Data;
 using LanguageCenter.Modules;
+using LanguageCenter.Modules.Jwt;
+using LanguageCenter.Modules.MappingProfiles;
+using LanguageCenter.Modules.PasswordHasher;
 using LanguageCenter.Repositories.Implementations;
 using LanguageCenter.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,19 +15,20 @@ using System.Text;
 
 namespace LanguageCenter
 {
-    public static class ServicesExtension
+	public static class ServicesExtension
 	{
 		public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
 		{
-			//services.AddRazorPages();
-
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
 			services.AddDbContext<Context>(
 				o => o.UseNpgsql(configuration.GetConnectionString("LanguageCenterDB"))
 			);
 
-			services.AddAutoMapper(typeof(AppMappingProfile));
+			services.AddAutoMapper(typeof(LanguageMappingProfile));
+			services.AddAutoMapper(typeof(LevelMappingProfile));
+			services.AddAutoMapper(typeof(CourseMappingProfile));
+			services.AddAutoMapper(typeof(PersonMappingProfile));
 
 			services.AddScoped<ILanguageRepository, LanguageRepository>();
 			services.AddScoped<ILevelRepository, LevelRepository>();
@@ -34,12 +39,7 @@ namespace LanguageCenter
 			services.AddScoped<IJwtProvider, JwtProvider>();
 
 			services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
-			//services.AddSession(options =>
-			//{
-			//	options.IdleTimeout = TimeSpan.FromMinutes(60);
-			//	options.Cookie.HttpOnly = true;
-			//	options.Cookie.IsEssential = true;
-			//});
+
 			services.AddAuthorization();
 			services.AddAuthentication(options =>
 			{
@@ -66,8 +66,6 @@ namespace LanguageCenter
 						}
 					};
 				});
-
-			//services.AddHttpContextAccessor();
 
 			services.AddControllers();
 

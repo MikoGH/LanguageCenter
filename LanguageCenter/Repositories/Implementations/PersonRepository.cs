@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using LanguageCenter.Models.Entity;
 using LanguageCenter.Data;
 using LanguageCenter.Repositories.Interfaces;
+using LanguageCenter.Models;
 
 namespace LanguageCenter.Repositories.Implementations
 {

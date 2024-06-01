@@ -1,7 +1,9 @@
-﻿using LanguageCenter.Models.Dto;
-using LanguageCenter.Models.Entity;
-using LanguageCenter.Modules;
-using LanguageCenter.Repositories.Interfaces;
+﻿using LanguageCenter.Features.Persons.Dtos;
+using LanguageCenter.Features.Persons.Queries.GetPersonByLogin;
+using LanguageCenter.Models;
+using LanguageCenter.Modules.Jwt;
+using LanguageCenter.Modules.PasswordHasher;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,21 +14,21 @@ namespace LanguageCenter.Controllers
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
-		private readonly IPersonRepository personRepository;
 		private readonly IPasswordHasher passwordHasher;
 		private readonly IJwtProvider jwtProvider;
+		private readonly IMediator mediator;
 
-		public AuthController(IPersonRepository personRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+		public AuthController(IPasswordHasher passwordHasher, IJwtProvider jwtProvider, IMediator mediator)
 		{
-			this.personRepository = personRepository;
 			this.passwordHasher = passwordHasher;
 			this.jwtProvider = jwtProvider;
+			this.mediator = mediator;
 		}
 
 		[HttpPost("login")]
 		public async Task<IActionResult> LogIn([FromQuery] LogInPersonDto personDto, CancellationToken cancellationToken)
 		{
-			PersonEntity person = await personRepository.GetByLoginAsync(personDto.Login, cancellationToken);
+			PersonEntity person = await mediator.Send(new GetPersonByLoginQuery(personDto.Login), cancellationToken);
 			if (person == null)
 				return NotFound();
 			if (!passwordHasher.Verify(personDto.Password, person.Password))

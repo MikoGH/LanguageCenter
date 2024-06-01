@@ -1,23 +1,26 @@
-﻿namespace LanguageCenter
+﻿using Microsoft.AspNetCore.Diagnostics;
+
+namespace LanguageCenter
 {
 	public static class AppExtension
 	{
 		public static WebApplication ConfigureApp(this WebApplication app)
 		{
-			if (!app.Environment.IsDevelopment())
+			app.UseExceptionHandler(app =>
 			{
-				app.UseExceptionHandler("/Error");
-			}
+				app.Run(async context =>
+				{
+					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+					var exception = exceptionHandlerPathFeature.Error;
+
+					await context.Response.WriteAsJsonAsync(new { error = exception.Message, statusCode = StatusCodes.Status500InternalServerError });
+				});
+			});
+
 			app.UseStaticFiles();
-
-			//app.UseRouting();
-
-			//app.UseSession();
 
 			app.UseAuthentication();
 			app.UseAuthorization();
-
-			//app.MapRazorPages();
 
 			app.MapControllers();
 

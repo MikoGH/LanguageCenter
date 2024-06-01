@@ -1,4 +1,4 @@
-﻿using LanguageCenter.Models.Entity;
+﻿using LanguageCenter.Models;
 
 namespace LanguageCenter.Repositories.Interfaces
 {
