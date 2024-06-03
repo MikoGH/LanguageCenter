@@ -8,11 +8,9 @@ namespace LanguageCenter.Models
 	/// </summary>
 	public class GroupClientEntity
 	{
-		[Key]
 		[Required]
 		[ForeignKey(nameof(GroupEntity))]
 		public int GroupId { get; set; }
-		[Key]
 		[Required]
 		[ForeignKey(nameof(PersonEntity))]
 		public int PersonId { get; set; }

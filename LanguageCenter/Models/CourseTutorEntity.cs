@@ -8,11 +8,9 @@ namespace LanguageCenter.Models
 	/// </summary>
 	public class CourseTutorEntity
 	{
-		[Key]
 		[Required]
 		[ForeignKey(nameof(CourseEntity))]
 		public int CourseId { get; set; }
-		[Key]
 		[Required]
 		[ForeignKey(nameof(PersonEntity))]
 		public int PersonId { get; set; }

@@ -25,6 +25,7 @@ namespace LanguageCenter.Repositories.Implementations
 
 		public async Task<GroupClientEntity> InsertAsync(GroupClientEntity groupClient, CancellationToken cancellationToken)
 		{
+			if (await context.GroupsClients.AnyAsync(gc => gc.Equals(groupClient), cancellationToken)) return null;
 			context.GroupsClients.Add(groupClient);
 			await context.SaveChangesAsync(cancellationToken);
 			return groupClient;

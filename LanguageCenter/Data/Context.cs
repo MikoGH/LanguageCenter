@@ -23,6 +23,10 @@ namespace LanguageCenter.Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.UseSerialColumns();
+			modelBuilder.Entity<CourseTutorEntity>()
+				  .HasKey(ct => new { ct.CourseId, ct.PersonId });
+			modelBuilder.Entity<GroupClientEntity>()
+				  .HasKey(gc => new { gc.GroupId, gc.PersonId });
 		}
 	}
 }

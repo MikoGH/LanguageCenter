@@ -3,14 +3,14 @@ using MediatR;
 
 namespace LanguageCenter.Features.Classrooms.Commands.DeleteClassroomById
 {
-	public class DeleteClassromByIdHandler : IRequestHandler<DeleteClassromByIdCommand, bool>
+	public class DeleteClassroomByIdHandler : IRequestHandler<DeleteClassroomByIdCommand, bool>
 	{
 		private readonly IClassroomRepository classroomRepository;
-		public DeleteClassromByIdHandler(IClassroomRepository classroomRepository)
+		public DeleteClassroomByIdHandler(IClassroomRepository classroomRepository)
 		{
 			this.classroomRepository = classroomRepository;
 		}
-		public async Task<bool> Handle(DeleteClassromByIdCommand request, CancellationToken cancellationToken)
+		public async Task<bool> Handle(DeleteClassroomByIdCommand request, CancellationToken cancellationToken)
 		{
 			return await classroomRepository.DeleteByIdAsync(request.id, cancellationToken);
 		}

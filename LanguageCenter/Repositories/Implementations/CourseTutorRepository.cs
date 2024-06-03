@@ -25,6 +25,7 @@ namespace LanguageCenter.Repositories.Implementations
 
 		public async Task<CourseTutorEntity> InsertAsync(CourseTutorEntity courseTutor, CancellationToken cancellationToken)
 		{
+			if (await context.CoursesTutors.AnyAsync(ct => ct.Equals(courseTutor), cancellationToken)) return null;
 			context.CoursesTutors.Add(courseTutor);
 			await context.SaveChangesAsync(cancellationToken);
 			return courseTutor;
