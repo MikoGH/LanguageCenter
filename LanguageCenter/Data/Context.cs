@@ -9,6 +9,12 @@ namespace LanguageCenter.Data
 		public DbSet<LevelEntity> Levels { get; set; }
 		public DbSet<CourseEntity> Courses { get; set; }
 		public DbSet<PersonEntity> Persons { get; set; }
+		public DbSet<GroupEntity> Groups { get; set; }
+		public DbSet<CourseTutorEntity> CoursesTutors { get; set; }
+		public DbSet<GroupClientEntity> GroupsClients { get; set; }
+		public DbSet<AddressEntity> Addresses { get; set; }
+		public DbSet<ClassroomEntity> Classrooms { get; set; }
+		public DbSet<ScheduleEntity> Schedules { get; set; }
 
 		public Context(DbContextOptions<Context> options) : base(options)
 		{

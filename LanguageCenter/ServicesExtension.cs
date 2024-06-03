@@ -34,6 +34,12 @@ namespace LanguageCenter
 			services.AddScoped<ILevelRepository, LevelRepository>();
 			services.AddScoped<ICourseRepository, CourseRepository>();
 			services.AddScoped<IPersonRepository, PersonRepository>();
+			services.AddScoped<IGroupRepository, GroupRepository>();
+			services.AddScoped<IAddressRepository, AddressRepository>();
+			services.AddScoped<IClassroomRepository, ClassroomRepository>();
+			services.AddScoped<IScheduleRepository, ScheduleRepository>();
+			services.AddScoped<IGroupClientRepository, GroupClientRepository>();
+			services.AddScoped<ICourseTutorRepository, CourseTutorRepository>();
 
 			services.AddScoped<IPasswordHasher, PasswordHasher>();
 			services.AddScoped<IJwtProvider, JwtProvider>();

@@ -13,7 +13,7 @@ namespace LanguageCenter.Features.Persons.Commands.UpdatePerson
 		}
 		public async Task<PersonEntity> Handle(UpdatePersonCommand request, CancellationToken cancellationToken)
 		{
-			return await personRepository.InsertAsync(request.person, cancellationToken);
+			return await personRepository.UpdateAsync(request.person, cancellationToken);
 		}
 	}
 }
