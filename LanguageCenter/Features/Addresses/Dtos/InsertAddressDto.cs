@@ -2,6 +2,6 @@
 {
 	public class InsertAddressDto
 	{
-		public int Address { get; set; }
+		public string Address { get; set; }
 	}
 }

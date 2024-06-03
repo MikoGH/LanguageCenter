@@ -2,6 +2,6 @@
 {
 	public class UpdateAddressDto
 	{
-		public int Address { get; set; }
+		public string Address { get; set; }
 	}
 }

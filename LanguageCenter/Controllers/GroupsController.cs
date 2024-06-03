@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using LanguageCenter.Features.Courses.Queries.ExistsCourseById;
-using LanguageCenter.Features.CoursesTutors.Commands.DeleteGroupClient;
-using LanguageCenter.Features.CoursesTutors.Commands.InsertGroupClient;
-using LanguageCenter.Features.CoursesTutors.Queries.GetGroupClientByCourseId;
 using LanguageCenter.Features.Groups.Commands.DeleteGroupById;
 using LanguageCenter.Features.Groups.Commands.InsertGroup;
 using LanguageCenter.Features.Groups.Commands.UpdateGroup;
@@ -12,8 +9,6 @@ using LanguageCenter.Features.Groups.Queries.GetGroupById;
 using LanguageCenter.Features.GroupsClients.Commands.DeleteGroupClient;
 using LanguageCenter.Features.GroupsClients.Commands.InsertGroupClient;
 using LanguageCenter.Features.GroupsClients.Queries.GetGroupClientByGroupId;
-using LanguageCenter.Features.Languages.Queries.ExistsLanguageById;
-using LanguageCenter.Features.Levels.Queries.ExistsLevelById;
 using LanguageCenter.Features.Persons.Dtos;
 using LanguageCenter.Features.Persons.Queries.ExistsPersonById;
 using LanguageCenter.Features.Persons.Queries.GetPersonById;

@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Features\CoursesTutors\Dtos\" />
-    <Folder Include="Features\GroupsClients\" />
+    <Folder Include="Features\GroupsClients\Dtos\" />
   </ItemGroup>
 
 </Project>

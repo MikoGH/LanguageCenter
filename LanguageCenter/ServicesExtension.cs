@@ -29,6 +29,10 @@ namespace LanguageCenter
 			services.AddAutoMapper(typeof(LevelMappingProfile));
 			services.AddAutoMapper(typeof(CourseMappingProfile));
 			services.AddAutoMapper(typeof(PersonMappingProfile));
+			services.AddAutoMapper(typeof(GroupMappingProfile));
+			services.AddAutoMapper(typeof(AddressMappingProfile));
+			services.AddAutoMapper(typeof(ClassroomMappingProfile));
+			services.AddAutoMapper(typeof(ScheduleMappingProfile));
 
 			services.AddScoped<ILanguageRepository, LanguageRepository>();
 			services.AddScoped<ILevelRepository, LevelRepository>();

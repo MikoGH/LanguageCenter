@@ -14,6 +14,6 @@ namespace LanguageCenter.Models
 		/// Адрес
 		/// </summary>
 		[Required]
-		public int Address { get; set; }
+		public string Address { get; set; }
 	}
 }
