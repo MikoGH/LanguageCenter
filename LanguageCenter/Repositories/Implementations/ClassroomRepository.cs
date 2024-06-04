@@ -13,16 +13,30 @@ namespace LanguageCenter.Repositories.Implementations
 			this.context = context;
 		}
 
+		/// <summary>
+		/// Получить список всех кабинетов
+		/// </summary>
+		/// <returns>Список кабинетов</returns>
 		public async Task<IEnumerable<ClassroomEntity>> GetAllAsync(CancellationToken cancellationToken)
 		{
 			return await context.Classrooms.ToListAsync(cancellationToken);
 		}
 
+		/// <summary>
+		/// Получить кабинет по id
+		/// </summary>
+		/// <param name="id">id кабинета</param>
+		/// <returns>Кабинет</returns>
 		public async Task<ClassroomEntity> GetByIdAsync(int id, CancellationToken cancellationToken)
 		{
 			return await context.Classrooms.FirstOrDefaultAsync(classroom => classroom.Id == id, cancellationToken);
 		}
 
+		/// <summary>
+		/// Добавить новый кабинет
+		/// </summary>
+		/// <param name="classroom">Кабинет</param>
+		/// <returns>Кабинет</returns>
 		public async Task<ClassroomEntity> InsertAsync(ClassroomEntity classroom, CancellationToken cancellationToken)
 		{
 			await context.Classrooms.AddAsync(classroom, cancellationToken);
@@ -30,6 +44,11 @@ namespace LanguageCenter.Repositories.Implementations
 			return classroom;
 		}
 
+		/// <summary>
+		/// Изменить кабинет
+		/// </summary>
+		/// <param name="classroom">Кабинет</param>
+		/// <returns>Кабинет</returns>
 		public async Task<ClassroomEntity> UpdateAsync(ClassroomEntity classroom, CancellationToken cancellationToken)
 		{
 			context.Classrooms.Update(classroom);
@@ -37,6 +56,11 @@ namespace LanguageCenter.Repositories.Implementations
 			return classroom;
 		}
 
+		/// <summary>
+		/// Удалить кабинет по id
+		/// </summary>
+		/// <param name="id">id кабинета</param>
+		/// <returns>false если id отсутствует; иначе true</returns>
 		public async Task<bool> DeleteByIdAsync(int id, CancellationToken cancellationToken)
 		{
 			ClassroomEntity classroom = await GetByIdAsync(id, cancellationToken);
@@ -46,6 +70,11 @@ namespace LanguageCenter.Repositories.Implementations
 			return true;
 		}
 
+		/// <summary>
+		/// Проверить, существует ли кабинет с данным id
+		/// </summary>
+		/// <param name="id">id кабинета</param>
+		/// <returns>true если id существует, иначе false</returns>
 		public async Task<bool> ExistsByIdAsync(int id, CancellationToken cancellationToken)
 		{
 			return await context.Classrooms.AnyAsync(classroom => classroom.Id == id, cancellationToken);

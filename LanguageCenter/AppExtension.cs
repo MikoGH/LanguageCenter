@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using LanguageCenter.Modules.ExceptionMiddleware;
 
 namespace LanguageCenter
 {
@@ -6,16 +6,7 @@ namespace LanguageCenter
 	{
 		public static WebApplication ConfigureApp(this WebApplication app)
 		{
-			app.UseExceptionHandler(app =>
-			{
-				app.Run(async context =>
-				{
-					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-					var exception = exceptionHandlerPathFeature.Error;
-
-					await context.Response.WriteAsJsonAsync(new { error = exception.Message, statusCode = StatusCodes.Status500InternalServerError });
-				});
-			});
+			app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 			app.UseStaticFiles();
 
